@@ -694,7 +694,87 @@ try{if(document.getElementById('joinPage'))initOnline();else if(document.getElem
  new MutationObserver(refresh).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
  window.addEventListener('resize',size);refresh();
 })();
-</script></body>
+</script>
+<style>
+#gameBack {
+  display:none;
+  position:sticky;
+  top:0;
+  z-index:1000;
+  width:100%;
+  padding:14px;
+  margin-bottom:12px;
+  background:#176e62;
+  color:white;
+  border:2px solid #f5d68a;
+  border-radius:12px;
+  font-size:18px;
+  font-weight:bold;
+  cursor:pointer;
+}
+body.play-only #gameBack {display:block}
+body.play-only .header,
+body.play-only .nav,
+body.play-only .hero,
+body.play-only #starPicker,
+body.play-only .coach,
+body.play-only .card-panel,
+body.play-only .note-footer {
+  display:none!important;
+}
+body.play-only .layout {display:block}
+body.play-only .game-panel {width:100%}
+body.play-only .shell {
+  max-width:1400px;
+  padding:8px;
+}
+@media(max-width:700px) {
+  body.play-only .middle {
+    grid-template-columns:1fr!important;
+  }
+  body.play-only .side {
+    flex-direction:row;
+    justify-content:flex-start;
+  }
+  body.play-only .side .mini-hand {
+    max-width:none;
+    max-height:none;
+    overflow:visible;
+  }
+}
+</style>
+<script>
+(function(){
+  const back=document.createElement('button');
+  back.id='gameBack';
+  back.type='button';
+  back.textContent='← キャラクター・ゲーム選択に戻る';
+  document.querySelector('.shell').prepend(back);
+
+  function enterGame(){
+    document.body.classList.add('play-only');
+    window.scrollTo(0,0);
+  }
+
+  document.querySelector('#nav').addEventListener('click',e=>{
+    if(e.target.closest('[data-mode]'))
+      setTimeout(enterGame,50);
+  });
+
+  document.querySelector('#stage').addEventListener('click',e=>{
+    if(e.target.closest(
+      '[data-action="m-start"],[data-action="bj-start"],[data-action="r-start"],[data-action="s-spin"],[data-kab]'
+    )) setTimeout(enterGame,50);
+  });
+
+  back.addEventListener('click',()=>{
+    document.body.classList.remove('play-only');
+    window.scrollTo(0,0);
+  });
+})();
+</script>
+
+</body>
 </html>
 
 
