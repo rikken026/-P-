@@ -178,3 +178,80 @@ changeLang('ja');
 })();
 
 
+/* オンライン対戦・ゲーム画面拡大 */
+(() => {
+  const room = document.getElementById('roomPage');
+  const layout = room.querySelector('.room-layout');
+  const bar = document.createElement('div');
+
+  bar.style.cssText =
+    'display:none;position:sticky;top:0;z-index:50;' +
+    'background:#102638;padding:10px;gap:8px;' +
+    'flex-wrap:wrap;border-radius:12px';
+
+  bar.innerHTML =
+    '<button class="button outline" id="gameReturn">' +
+    '← ゲーム選択に戻る</button>' +
+    '<button class="button gold" id="gameSpeak">' +
+    '🔊 森Pの説明を聞く</button>';
+
+  room.querySelector('.room-top').after(bar);
+
+  let playing = false;
+  let focused = false;
+
+  function showGame(on) {
+    focused = on;
+    const parts = [
+      document.querySelector('.container > nav'),
+      document.querySelector('header.top'),
+      room.querySelector('.room-top'),
+      room.querySelector('.left'),
+      room.querySelector('.coach-panel'),
+      document.getElementById('starRoom'),
+      room.querySelector('.privacy')
+    ];
+
+    parts.forEach(el => {
+      if (el) el.style.display = on ? 'none' : '';
+    });
+
+    layout.style.gridTemplateColumns =
+      on ? 'minmax(0,1fr)' : '';
+
+    document.querySelector('.container').style.maxWidth =
+      on ? '100%' : '';
+
+    bar.style.display = on ? 'flex' : 'none';
+    window.scrollTo(0, 0);
+  }
+
+  document.getElementById('gameReturn').onclick =
+    () => showGame(false);
+
+  document.getElementById('gameSpeak').onclick =
+    () => room.querySelector('.star-coach-say')?.click();
+
+  const oldRender = render;
+  render = function(...args) {
+    oldRender(...args);
+    const active = !!state?.session;
+
+    if (active && !playing && !room.hidden)
+      showGame(true);
+
+    if (!active && playing && focused)
+      showGame(false);
+
+    playing = active;
+  };
+
+  document.getElementById('leaveBtn')
+    .addEventListener('click', () => {
+      showGame(false);
+      playing = false;
+    });
+})();
+
+
+
