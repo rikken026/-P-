@@ -774,6 +774,50 @@ body.play-only .shell {
 })();
 </script>
 
+ 
+<script>
+(() => {
+  const speak = () => {
+    document.querySelector(
+      'aside.coach .star-coach-say'
+    )?.click();
+  };
+
+  document.getElementById('tutOpen')
+    ?.addEventListener('click', () => {
+      if (!tutorialVisible) {
+        tutorialVisible = true;
+        renderAll();
+      }
+      speak();
+    });
+
+  ['nextStep', 'prevStep'].forEach(id => {
+    document.getElementById(id)
+      ?.addEventListener('click', speak);
+  });
+
+  const back = document.getElementById('gameBack');
+  if (back) {
+    const btn = document.createElement('button');
+    btn.id = 'gameVoice';
+    btn.textContent = '🔊 森Pの説明を聞く';
+    btn.style.cssText =
+      'display:none;width:100%;padding:16px;' +
+      'margin:8px 0;background:#176e62;' +
+      'color:white;border-radius:12px;' +
+      'font-size:18px;font-weight:bold;';
+    back.after(btn);
+    btn.addEventListener('click', speak);
+  }
+})();
+</script>
+<style>
+body.play-only #gameVoice {
+  display:block!important;
+}
+</style>
+
 </body>
 </html>
 
