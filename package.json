@@ -1,0 +1,14 @@
+{
+  "name": "morip-online-lounge",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "description": "Mori P four-language multiplayer lounge with fictional coins",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node test_server.js"
+  },
+  "engines": {"node": ">=20"},
+  "dependencies": {"ws": "^8.18.3"}
+}

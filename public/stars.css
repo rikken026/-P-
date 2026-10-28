@@ -1,0 +1,50 @@
+/* Global Idol character roster, fan stage, accessible mobile controls */
+.star-picker{margin:12px 0 18px;border-color:#b99053;background:linear-gradient(150deg,#20283c,#142c3a)}
+.star-title{display:flex;align-items:start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.star-title h2{font-size:21px;color:#ffe4aa;margin:0 0 4px}
+.star-title p,.star-disclaimer{font-size:12px;color:#bdd5da;margin:0}
+.star-volume{display:flex;align-items:center;gap:9px;flex-wrap:wrap;font-size:12px}
+.star-volume label{display:flex;gap:6px;align-items:center;border:1px solid #516d79;border-radius:10px;padding:5px 8px;background:#183342}
+.star-volume input[type=range]{width:85px;accent-color:#f1cc76}
+.star-volume input[type=checkbox]{accent-color:#e8bd5d}
+.star-selected{display:flex;gap:12px;align-items:center;margin-bottom:13px;padding:10px;border-radius:14px;border:1px solid #937747;background:linear-gradient(125deg,#422c45,#26384c)}
+.star-selected img{width:90px;height:104px;object-fit:cover;border-radius:10px;border:2px solid #f5d78b;flex:none}
+.star-selected strong{display:block;font-size:20px;color:#ffe2a8}.star-selected small{color:#d8e2e9;display:block}.star-selected p{margin:5px 0;color:#fff}
+.star-kicker{font-size:11px;color:#ffd17d;letter-spacing:.1em;font-weight:800}
+.star-selected button,.star-solo-gifts button{background:#29485a;color:white;border:1px solid #d4a966;padding:7px 11px;border-radius:9px;font-weight:700}
+.star-grid{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:7px}
+.star-card{border:1px solid #667386;border-radius:10px;overflow:hidden;background:#142939;color:#fff;padding:0 0 5px;display:flex;flex-direction:column;text-align:left;min-width:0;position:relative}
+.star-card img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;object-position:top;background:#344d61}
+.star-card span{display:block;font-size:11px;font-weight:800;padding:4px 5px 0;line-height:1.3;word-break:keep-all}.star-card small{color:#b2d3dc;font-size:9px;padding:1px 5px}
+.star-card.active{border:2px solid #ffdb84;background:#665032;box-shadow:0 0 0 2px #ffbf4050,0 0 16px #fed56858}.star-card.active:before{content:'★';color:#ffffd0;position:absolute;top:3px;right:3px;font-size:15px;text-shadow:0 0 5px #000}
+.star-disclaimer{margin-top:9px}
+.star-room{margin-bottom:15px;background:linear-gradient(120deg,#322e47,#183345);border-color:#a88756}
+.star-room-top{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.star-hero{display:flex;align-items:center;gap:12px}.star-hero img{width:73px;height:76px;object-fit:cover;border-radius:12px;border:2px solid #e9c37e}
+.star-hero h3{font-size:20px;color:#ffe0a1;margin:0}.star-hero p{margin:0;font-size:12px;color:#d3dde4}
+.star-hero .star-phrase{color:#fff;max-width:490px}
+.star-gift-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin:13px 0}
+.star-gift-bar label{font-size:12px;display:grid;gap:4px}.star-gift-bar select{max-width:200px;padding:7px}
+.star-gift-bar button{min-height:38px}
+.star-feed{display:flex;gap:5px;flex-wrap:wrap;min-height:18px}
+.star-feed-item{border:1px solid #4e7581;background:#203c53;border-radius:12px;padding:5px 9px;font-size:11px;color:#faefca}
+.star-player-portrait{width:45px;height:49px;object-fit:cover;flex:none;border-radius:7px;border:1px solid #e4c281}
+.star-role{display:block;color:#ffd98c!important}
+.star-toast{position:fixed;z-index:200;left:50%;top:13vh;transform:translateX(-50%);width:min(94vw,500px);padding:17px;background:linear-gradient(130deg,#3b2556,#123b4d);border:2px solid #ffdc8b;box-shadow:0 10px 45px #000a,0 0 40px #eab45a55;border-radius:18px;text-align:center;font-size:16px;pointer-events:none;animation:star-pop .3s ease-out}
+.star-toast .star-shimmer{display:block;font-size:34px;animation:star-pulse .45s ease-in-out 2}
+.star-toast b{display:block;font-weight:850;color:#fff5d5}
+@keyframes star-pop{from{opacity:0;transform:translateX(-50%) scale(.8)}to{opacity:1;transform:translateX(-50%) scale(1)}}
+@keyframes star-pulse{50%{transform:scale(1.2)}}
+.star-solo-fans{max-width:1160px;margin:10px 0 20px;border:1px solid #7f6583;background:#20273c;padding:13px;border-radius:15px}
+.star-solo-gifts{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.star-morip-icon{height:94px;width:94px;object-fit:cover;object-position:center;border-radius:15px}
+@media(max-width:920px){.star-grid{grid-template-columns:repeat(5,minmax(0,1fr))}}
+@media(max-width:520px){.star-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.star-card span{font-size:10px}.star-card small{font-size:8px}.star-selected img{width:70px;height:90px}.star-selected strong{font-size:18px}.star-gift-bar label{flex:1;min-width:135px}.star-gift-bar select{width:100%}}
+@media(prefers-reduced-motion:reduce){.star-toast,.star-toast .star-shimmer{animation:none}}
+
+.coach-head .small-morip{background:#fff url('/assets/morip.png') center/cover no-repeat}
+.coach-head .small-morip .morip{display:none}
+.join-page .medallion{background:#fff url('/assets/morip.png') center/cover no-repeat}
+.join-page .medallion .morip{display:none}
+
+.star-coach-say{background:#33576a;border:1px solid #e7cb8a;border-radius:10px;padding:8px 12px;margin-top:9px;color:#fff4cf;font-weight:800;cursor:pointer}

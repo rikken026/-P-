@@ -1,0 +1,42 @@
+/* Shared touch layout; loaded last in online and embedded in offline edition. */
+html{scroll-padding-bottom:180px}body{font-size:16px;padding-bottom:var(--dock-space,0px)}
+button,input,select{touch-action:manipulation}
+button,.button,.button.small-btn,.btn,.btn.little,.choice,.bet-options button,.nav button,.star-gift-bar button{min-height:48px;min-width:48px;font-size:16px;line-height:1.45}
+select,input:not([type=checkbox]):not([type=range]){min-height:48px;font-size:16px!important}
+input[type=checkbox]{width:24px;height:24px;flex:none;vertical-align:middle}
+label:has(input[type=checkbox]),.star-volume label{min-height:48px;display:inline-flex;align-items:center;gap:8px}
+input[type=range]{min-height:48px}
+button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #ffe08c;outline-offset:3px}
+button:active{filter:brightness(1.2)}
+.small,.board label,.config label,.activity .entry,.star-title p,.star-disclaimer,.star-volume,.star-gift-bar label,.star-feed-item{font-size:14px;color:#d3e1e8}
+.tile, .self-hand .tile{width:48px;min-width:48px;height:68px;min-height:68px;font-size:25px;flex:0 0 48px;opacity:1}
+.board .tile{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;line-height:1.2;font-size:24px;padding:2px}
+.board .tileline,.self-hand{gap:8px;flex-wrap:wrap;justify-content:flex-start;padding:12px 4px;overflow:visible}
+.tile.discarded{width:34px;min-width:34px;min-height:42px;height:auto;font-size:18px;flex-basis:34px}
+.tile.touch-selected{outline:3px solid #ffcf59;outline-offset:2px;box-shadow:0 0 0 5px #142a38;transform:translateY(-4px);background:#fff2ba}
+.tile:disabled{cursor:default;opacity:.85}
+.card,.playing-card,.special-board .playing-card{min-width:48px;min-height:68px}
+.playing-cards,.cardline{flex-wrap:wrap;gap:8px}
+.controls,.action-row,.casino-actions{gap:10px}
+.star-card span{font-size:14px}.star-card small{font-size:12px;color:#d5e6ed}
+.star-grid{gap:10px}.star-selected>div,.star-hero>div,.left,.right,.layout>*{min-width:0;overflow-wrap:anywhere}
+.touch-dock{position:fixed;z-index:100;bottom:0;left:0;right:0;background:#142b3bf5;border-top:2px solid #e6c376;box-shadow:0 -6px 22px #0006;padding:10px max(12px,env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));display:none;gap:8px;flex-wrap:wrap;max-height:42dvh;overflow:auto}
+.touch-dock[hidden]{display:none!important}.touch-dock button{flex:1 1 120px;border:1px solid #c7d8df;border-radius:10px;background:#31566b;color:#fff;font-weight:750;padding:10px}
+.touch-selection[hidden]{display:none}
+.touch-dock .touch-confirm{background:#ffdc86;color:#152937}.touch-dock p{width:100%;margin:0;font-size:14px;color:#fff4d4}
+.touch-selection{padding:12px;background:#183442;border:1px solid #d9bd79;border-radius:12px;margin:10px 0;display:flex;gap:10px;align-items:center;flex-wrap:wrap}.touch-selection span{flex:1;min-width:140px}.touch-selection button{padding:10px;border-radius:10px;background:#ffdc86;color:#172934;font-weight:bold}
+@media(max-width:850px){
+ .touch-dock{display:flex}.room-layout{display:flex;flex-direction:column}.room-layout>.right{order:-1}
+ .top,.header{flex-wrap:wrap;gap:12px}.top select{font-size:16px;min-width:140px}.brand{min-width:0}.brand p{font-size:14px}
+ .container,.shell{padding-left:12px;padding-right:12px}.panel,.game-panel{padding:12px}.game-heading,.sec-head{flex-wrap:wrap}
+ .games button{font-size:16px;padding:12px}.games{gap:10px}.star-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .nav{overflow-x:auto;flex-wrap:nowrap;padding-bottom:8px}.nav button{flex:none;font-size:16px}
+ .hand-compare{flex-wrap:wrap}.card-tray{min-width:0;flex:1 1 220px}.star-selected{align-items:flex-start}
+ .board .row>label{max-width:100%}.board .row select{max-width:100%}.table{padding:8px}.middle{grid-template-columns:1fr;gap:8px}
+ .side{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.side .mini-hand{max-width:none;max-height:none;flex-wrap:wrap}
+ .mini-hand{flex-wrap:wrap}.mini-tile,.side .mini-tile,.discard-row .mini-tile{width:24px;height:34px;font-size:14px}
+ .center-stats,.discard-zone span{font-size:13px}.center-board{padding:8px}.discard-row{flex-wrap:wrap}
+ .star-toast{top:8px;max-height:30dvh;overflow:hidden}
+}
+@media(max-width:420px){.star-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.star-selected{flex-wrap:wrap}.room-actions>.button{flex:1}.shop-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.reel{min-width:48px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.radial.spinning,.pulse{animation:none}}
