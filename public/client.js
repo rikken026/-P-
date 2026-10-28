@@ -140,3 +140,41 @@ function renderSlots(){
 const refill=document.createElement('button');refill.className='button outline small-btn';refill.dataset.i='walletRefill';refill.textContent=txt('walletRefill');refill.onclick=()=>sendAction('refill');document.querySelector('#players').after(refill);
 changeLang('ja');
 
+
+/* 森P オンライン音声チュートリアル */
+(() => {
+  const room = document.getElementById('roomPage');
+  const panel = room.querySelector('.coach-panel');
+  const next = document.getElementById('coachNext');
+  const language = document.getElementById('language');
+
+  function speak() {
+    panel.querySelector('.star-coach-say')?.click();
+  }
+
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'button gold';
+  btn.style.cssText =
+    'min-height:52px;font-size:17px;white-space:normal';
+
+  const labels = {
+    ja: '🎓 森Pの説明を聞く',
+    en: '🎓 Hear Mori P',
+    zh: '🎓 收听森P讲解',
+    ko: '🎓 모리P 설명 듣기'
+  };
+
+  function updateLabel() {
+    btn.textContent = labels[language.value] || labels.ja;
+  }
+
+  updateLabel();
+  language.addEventListener('change', updateLabel);
+  btn.addEventListener('click', speak);
+  next.addEventListener('click', speak);
+
+  room.querySelector('.room-actions').prepend(btn);
+})();
+
+
