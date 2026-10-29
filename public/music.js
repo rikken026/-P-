@@ -182,7 +182,9 @@
 
     master.gain.setTargetAtTime(
       Number(volume.value)/100 *
-        (talking ? 0.05 : 0.60),
+  (talking ? 0.18 : 0.60),    
+
+
       ctx.currentTime,0.15
     );
 
