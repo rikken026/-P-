@@ -25,7 +25,7 @@
     </label>
     <label>音量
       <input id="musicVolume" type="range"
-        min="0" max="100" value="30">
+        min="0" max="100" value="70">
     </label>
     <span id="musicState">停止中</span>
   `;
@@ -182,7 +182,7 @@
 
     master.gain.setTargetAtTime(
       Number(volume.value)/100 *
-        (talking ? 0.05 : 0.22),
+        (talking ? 0.05 : 0.60),
       ctx.currentTime,0.15
     );
 
