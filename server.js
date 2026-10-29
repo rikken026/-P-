@@ -1,4 +1,5 @@
 'use strict';
+const CardSlots = require('./public/slots.js');
 const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -278,15 +279,11 @@ function slotsSpin(room,p) {
  const s=room.session;if(!s||s.type!=='slots'||!s.receipts[p.id])throw Error('needShop');
  if(p.coins<room.stake)throw Error('coinsLow');p.coins-=room.stake;
  const target=s.receipts[p.id].target;
- let reels=Array.from({length:3},()=>String(rnd(10)));
- if(rnd(8)===0)reels=target.split('');
- let multi=0;
- if(reels.join('')===target)multi=5;
- else if(reels.every(v=>v===reels[0]))multi=3;
- else if(new Set(reels).size<=2)multi=1;
- p.coins+=room.stake*multi;
- s.spins[p.id]={reels,multi,at:Date.now()};
- log(room,'slotResult',{name:p.name,reels:reels.join(''),multi});
+ const reels=CardSlots.draw(rnd),result=CardSlots.evaluate(reels,target);
+ const multi=result.multi,payout=Math.floor(room.stake*multi);
+ p.coins+=payout;
+ s.spins[p.id]={reels,...result,payout,stake:room.stake,at:Date.now()};
+ log(room,'slotResult',{name:p.name,reels:reels.join(' / '),multi});
 }
 function withAction(ws, data) {
  const {room,p}=requirePlayer(ws);if(!room||!p)throw Error('notJoined');

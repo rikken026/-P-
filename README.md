@@ -4,7 +4,7 @@ Four-language (JA, EN, ZH, KO) fictional-coin party game with a 20-character sta
 
 ## Play solo, offline
 
-Open `public/solo.html` in a browser. It is a self-contained file, including all character thumbnails and the Mori P image. The separately supplied `森P_アイドル演出版_1人用.html` is the same file.
+Open `public/solo.html` in a browser. Keep public/slots.js and public/slots.css alongside it. Character thumbnails and the Mori P image remain embedded. The separately supplied `森P_アイドル演出版_1人用.html` is the same file.
 
 ## Run online multiplayer
 
@@ -25,7 +25,7 @@ A nickname and a shared passphrase are the only join inputs; maximum 4 players p
 - `public/assets/morip.png`: supplied Mori P mascot.
 - `public/stars.js` + `public/stars.css`: character picker, fan stage and optional Web Speech synthesis / Web Audio sound effects.
 - `server.js`: character IDs on join/update, synchronized free gifts and fan notifications when players win; does not alter coin balances for gifts.
-- `public/solo.html`: fully self-contained offline game, voice/effects and selection included.
+- `public/solo.html`: offline game with companion slots.js and slots.css, voice/effects and selection included.
 - `test_server.js`: mocked WebSocket unit/integration tests.
 
 Speech voice availability differs across devices/browsers and may need enabled system voices. Sound is opt-out via ON/OFF and volume controls; audio activation may require a user click. The app does not have recorded voice acting, pre-recorded crowd audio, or real-money functionality.
@@ -33,7 +33,7 @@ Speech voice availability differs across devices/browsers and may need enabled s
 ## Tests
 
 ```bash
-node test_server.js
+npm test
 ```
 
 The previous special-rule game mechanics remain prototypes (not official Riichi Mahjong, Oicho-Kabu, Blackjack, or casino-game rules), and full simultaneous real-network device testing has not been completed in this sandbox.

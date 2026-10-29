@@ -7,8 +7,12 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "test": "node test_server.js"
+    "test": "node test_slots.js && node test_server.js"
   },
-  "engines": {"node": ">=20"},
-  "dependencies": {"ws": "^8.18.3"}
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "ws": "^8.18.3"
+  }
 }

@@ -135,7 +135,7 @@ button:active{filter:brightness(1.2)}
 }
 @media(max-width:420px){.star-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.star-selected{flex-wrap:wrap}.room-actions>.button{flex:1}.shop-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.reel{min-width:48px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.radial.spinning,.pulse{animation:none}}
-</style></head>
+</style><link rel="stylesheet" href="slots.css"><script src="slots.js"></script></head>
 <body>
 <div class="shell">
 <header class="header"><div class="brand"><div class="brandicon">🀄</div><div><h1 id="appTitle">森Pのゲームラウンジ</h1><p class="subtitle" id="appSub">4か国語・架空コインだけで遊べるゲーム集</p></div></div><div class="head-controls"><span class="small-tag" id="virtualLabel">FICTIONAL COINS ONLY</span><select class="language" id="language" aria-label="Language"><option value="ja">🇯🇵 日本語</option><option value="en">🇬🇧 English</option><option value="zh">🇨🇳 中文</option><option value="ko">🇰🇷 한국어</option></select><div class="wallet"><span class="symbol">🪙</span><div><small id="walletLabel">所持コイン</small><br><strong id="walletValue">1,000</strong></div></div></div></header>
@@ -160,7 +160,7 @@ try{let v=localStorage.getItem('morip-lounge-lang');if(DICT[v])lang=v;let savedC
 function t(k,vars){let s=DICT[lang][k]??DICT.ja[k]??k;if(vars)for(const [a,b] of Object.entries(vars))s=String(s).split('{'+a+'}').join(String(b));return s;}
 function save(){try{localStorage.setItem('morip-lounge-coins',String(balance));localStorage.setItem('morip-lounge-lang',lang)}catch(e){}}
 function note(key,vars={},kind=''){notice={key,vars,kind};renderStatus()}
-function renderStatus(){$('notice').className='notice '+(notice.kind||'');$('notice').textContent=t(notice.key,notice.vars)}
+function renderStatus(){if(notice.key==='cardSlotResult'&&slots?.result)DICT[lang].cardSlotResult=CardSlots.summary(slots.result,slots.stake,lang);$('notice').className='notice '+(notice.kind||'');$('notice').textContent=t(notice.key,notice.vars)}
 function take(){if(balance<bet){note('insufficient',{},'lose');return false}balance-=bet;save();renderWallet();return true}
 function pay(n){balance+=Math.max(0,Math.floor(n));save();renderWallet()}
 function renderWallet(){$('walletValue').textContent=balance.toLocaleString();$('stakeValue').textContent=bet.toLocaleString()}
@@ -399,30 +399,31 @@ function renderRoulette(){const r=roulette,active=!!r?.spinning,choiceLabel=r?.c
  const dice=r?.num!==null&&r?.num!==undefined?`<div class="dice-zone"><div class="score-counter">${t('rScore')} <strong>${r.score}</strong> / 25</div><div class="stat-strip">🎲 ${t('rDicePot')}: ${r.dicePot} 🪙 · ${t('rDiceLeft')}: ${3-r.diceCount} ${r.lastDie?'· 🎲 '+r.lastDie:''}</div><div class="casino-actions"><button class="btn secondary" data-action="dice-roll" ${r.diceCount>=3||r.settled?'disabled':''}>${t('rDice')} · ${bet}🪙</button><button class="btn primary" data-action="dice-settle" ${r.dicePot===0||r.settled?'disabled':''}>${t('rSettle')}</button></div><small class="muted">${t('rDiceHint')}</small></div>`:'';
  $('stage').innerHTML=`<div class="roulette-board special-board"><div class="game-round-label">STOP ROULETTE · 🎲 DICE</div>${wheel}<div class="casino-actions">${active?`<button class="btn primary pulse" data-action="r-stop">${t('rStop')}</button>`:choices}${!active?`<button class="btn primary" data-action="r-start" ${r?.dicePot>0&&!r?.settled?'disabled':''}>${t('rStart')} · ${bet}🪙</button>`:''}</div>${dice}</div>`;
 }
+Object.keys(DICT).forEach(k=>{DICT[k].rules[4]=[CardSlots.rules(k)];DICT[k].tutorials[4]=[CardSlots.rules(k)];DICT[k].sSpinning=CardSlots.words(k)[4]});
 // Receipt slots: purchases are separate play-coin charges; precise per-reel stopping determines matching digits.
-function slotState(){if(!slots)slots={total:0,purchases:[],digits:[0,0,0],running:false,stopped:0,stake:0,matched:null};return slots}
+function slotState(){if(!slots)slots={total:0,purchases:[],digits:Array(9).fill('?'),running:false,stopped:0,stake:0,matched:null};return slots}
 function receiptTarget(s){return String(s.total%1000).padStart(3,'0')}
 function isRepdigit(s){const target=receiptTarget(s);return target[0]===target[1]&&target[1]===target[2]}
 function shopBuy(i){const s=slotState();if(s.running){note('sCannotChange');return}if(i<0||i>=SHOP_PRICES.length)return;const cost=SHOP_PRICES[i];if(!payCost(cost))return;s.total+=cost;s.purchases.push(i);
  note('sPurchased',{name:t('shopItems')[i],cost,total:s.total},'win');renderStage();}
-function resetReceipt(){const s=slotState();if(s.running)return;s.total=0;s.purchases=[];s.matched=null;note('sResetNote');renderStage()}
+function resetReceipt(){const s=slotState();if(s.running)return;s.total=0;s.purchases=[];s.matched=null;s.result=null;note('sResetNote');renderStage()}
 function startSlots(){const s=slotState();if(s.running)return;if(s.total<=0){note('sNeedShop');return}if(!take())return;
- s.running=true;s.stopped=0;s.stake=bet;s.matched=null;s.digits=Array.from({length:3},()=>Math.floor(Math.random()*10));
+ s.running=true;s.stopped=0;s.stake=bet;s.matched=null;s.result=null;s.digits=CardSlots.draw(n=>Math.floor(Math.random()*n));
  note('sSpinning');renderStage();let started=Date.now();slotsTimer=setInterval(()=>{
   if(!slots?.running||mode!=='slots'){clearInterval(slotsTimer);slotsTimer=null;return}
-  for(let i=s.stopped;i<3;i++){s.digits[i]=(s.digits[i]+1+Math.floor(Math.random()*4))%10;const v=$('slotDigit'+i);if(v)v.textContent=s.digits[i]}
+  for(let i=0;i<9;i++){if(i%3<s.stopped)continue;s.digits[i]=CardSlots.symbols[Math.floor(Math.random()*14)];const v=$('slotDigit'+i);if(v)v.textContent=s.digits[i]}
   if(Date.now()-started>15000){stopSlotDigit();started=Date.now()-13200}
  },100);
 }
 function stopSlotDigit(){const s=slotState();if(!s.running)return;s.stopped++;
  if(s.stopped<3){renderStage();return}clearInterval(slotsTimer);slotsTimer=null;s.running=false;
- const target=receiptTarget(s).split('').map(Number),count=s.digits.filter((d,i)=>d===target[i]).length;s.matched=count;
- const payout=count===3?s.stake*(isRepdigit(s)?15:10):count===2?s.stake*2:0;
- if(payout)pay(payout);
- note(count===3?'sWin':count===2?'sPair':'sMiss',{n:count>=2?payout-s.stake:s.stake},payout?'win':'lose');renderStage();
+ s.result=CardSlots.evaluate(s.digits,receiptTarget(s));s.matched=s.result.multi;
+ const payout=Math.floor(s.stake*s.result.multi);if(payout)pay(payout);
+ notice={key:'cardSlotResult',vars:{},kind:payout?'win':'lose'};
+ DICT[lang].cardSlotResult=CardSlots.summary(s.result,s.stake,lang);renderStatus();renderStage();
 }
 function renderSlots(){const s=slotState(),target=receiptTarget(s),match=s.matched;
- $('stage').innerHTML=`<div class="slot-board special-board"><div class="game-round-label">MORI P · RECEIPT SLOTS</div><div class="shop-section"><h3>🛍️ ${t('sShop')}</h3><div class="shop-grid">${SHOP_PRICES.map((cost,i)=>`<button class="shop-item" data-buy="${i}" ${s.running?'disabled':''}><span>${SHOP_EMOJI[i]}</span><strong>${escapeHTML(t('shopItems')[i])}</strong><small>🪙 ${cost}</small></button>`).join('')}</div></div><div class="receipt"><div><small>${t('sReceipt')}</small><strong>${s.total} 🪙</strong></div><div><small>${t('sTarget')}</small><strong class="receipt-digits">${s.total?target:'---'}</strong></div><div class="receipt-hint">${s.total?(isRepdigit(s)?'✨ '+t('sRepdigit'):t('sNoRepdigit')):t('sPrompt')}</div><div class="basket">${s.purchases.length?s.purchases.map(i=>SHOP_EMOJI[i]).join(' '):t('sEmpty')}</div><button class="btn little outline" data-action="s-reset" ${s.running?'disabled':''}>${t('sReset')}</button></div><div class="slot-machine"><div class="slot-reels">${s.digits.map((d,i)=>`<div class="reel ${s.running&&i>=s.stopped?'rolling':''}" id="slotDigit${i}">${d}</div>`).join('')}</div></div><div class="casino-actions">${s.running?`<button class="btn primary pulse" data-action="s-stop">${t('sStop',{i:s.stopped+1})}</button>`:`<button class="btn primary" data-action="s-spin" ${s.total===0?'disabled':''}>${t('sSpin')} · ${bet}🪙</button>`}</div><div class="payout">${match!==null?t('sMatch',{n:match}):'2 / 3 → ×2 · 3 / 3 → ×10 · ✨ 3 / 3 → ×15'}</div></div>`;
+ $('stage').innerHTML=`<div class="slot-board special-board"><div class="game-round-label">MORI P · RECEIPT SLOTS</div><div class="shop-section"><h3>🛍️ ${t('sShop')}</h3><div class="shop-grid">${SHOP_PRICES.map((cost,i)=>`<button class="shop-item" data-buy="${i}" ${s.running?'disabled':''}><span>${SHOP_EMOJI[i]}</span><strong>${escapeHTML(t('shopItems')[i])}</strong><small>🪙 ${cost}</small></button>`).join('')}</div></div><div class="receipt"><div><small>${t('sReceipt')}</small><strong>${s.total} 🪙</strong></div><div><small>${t('sTarget')}</small><strong class="receipt-digits">${s.total?target:'---'}</strong></div><div class="receipt-hint">${s.total?CardSlots.target(target).join(' · '):t('sPrompt')}</div><div class="basket">${s.purchases.length?s.purchases.map(i=>SHOP_EMOJI[i]).join(' '):t('sEmpty')}</div><button class="btn little outline" data-action="s-reset" ${s.running?'disabled':''}>${t('sReset')}</button></div>${CardSlots.board(s.digits,s.result,s.running,s.stopped)}<div class="casino-actions">${s.running?`<button class="btn primary pulse" data-action="s-stop">${CardSlots.words(lang)[4]} ${s.stopped+1}</button>`:`<button class="btn primary" data-action="s-spin" ${s.total===0?'disabled':''}>${t('sSpin')} · ${bet}🪙</button>`}</div><div class="payout">${CardSlots.rules(lang)}${s.result?'<p role="status">'+CardSlots.summary(s.result,s.stake,lang)+'</p>':''}</div></div>`;
 }
 // Override navigation to clean timers before switching, and put all game actions behind click delegation.
 const oldGoMode=goMode;

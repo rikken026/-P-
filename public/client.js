@@ -129,15 +129,23 @@ function renderRoulette(){
  }
  return `<div class="wheel-wrap"><div class="radial ${s.phase==='spinning'?'spinning':''}"><span class="center">${s.phase==='spinning'?'🎡':s.result}</span></div><div class="tablebox"><p>${s.phase==='spinning'?esc(txt('spinning')):esc(txt('wheelResult'))}</p>${s.phase==='ended'?`<div class="big-number">${s.result}</div>`:''}<p>${Object.entries(s.bets).map(([id,b])=>`${esc(playerName(id))}: ${esc(b.pick)} ${s.phase==='ended'?(b.won?'✅':'✖️'):''}`).join('　')}</p>${s.phase==='spinning'?button(txt('stopSpin'),'rouletteStop','',false,'gold'):''}${s.phase==='ended'?`<p>${esc(txt('diceNote'))}</p>${s.bets[state.me]?button(txt('dice'),'diceRisk','',!!s.dice[state.me]||me().coins<10,'gold'):''}<p>${Object.entries(s.dice).map(([id,d])=>`${esc(playerName(id))}: 🎲${d.die} (${d.delta>=0?'+':''}${d.delta})`).join('　')}</p>${canHost()?button(txt('again'),'restart'):''}`:''}</div></div>`;
 }
+let lastSlotAnimation=0;
 function renderSlots(){
  const s=state.session?.type==='slots'?state.session:null, receipt=s?.receipts[state.me],spin=s?.spins[state.me];
+ if(spin&&spin.at!==lastSlotAnimation){lastSlotAnimation=spin.at;setTimeout(()=>{
+ const cells=[...document.querySelectorAll('.card-slots .card-slot')];if(cells.length!==9)return;
+ const start=Date.now();const timer=setInterval(()=>{if(!cells[0].isConnected){clearInterval(timer);return}const elapsed=Date.now()-start;
+ cells.forEach((cell,i)=>{cell.textContent=elapsed>450+(i%3)*180?spin.reels[i]:CardSlots.symbols[Math.floor(Math.random()*14)]});
+ if(elapsed>850){clearInterval(timer);cells.forEach((cell,i)=>cell.textContent=spin.reels[i])}},70);
+ },0)}
  const products=[['🥤',111],['🍪',222],['🎁',333],['📒',444]];
  return `<div class="tablebox"><p>${esc(txt('shopHelp'))}</p><div class="row">${products.map(([emoji,cost])=>`<button data-act="shop" data-val="${cost}" class="shopitem" ${me().coins<cost?'disabled':''}><strong style="font-size:22px">${emoji}</strong><span>${cost} 🪙</span><small>${esc(txt('shop'))}</small></button>`).join('')}</div></div>
- <div class="tablebox"><h3>${esc(txt('receipt'))}</h3><div class="row">${receipt?`<span class="pill">${receipt.cost} 🪙</span><div class="big-number">${esc(receipt.target)}</div>`:`<span>${esc(txt('noReceipt'))}</span>`}</div><p>${esc(txt('receiptHit'))}</p><div class="reels">${(spin?.reels||['?','?','?']).map(r=>`<span class="reel">${esc(r)}</span>`).join('')}</div>${spin?`<p class="highlight">${spin.multi}×</p>`:''}${button(txt('slotSpin'),'slotSpin','',!receipt||me().coins<state.stake,'gold')}</div>
+ <div class="tablebox"><h3>${esc(txt('receipt'))}</h3><div class="row">${receipt?`<span class="pill">${receipt.cost} 🪙</span><div class="big-number">${esc(receipt.target)}</div>`:`<span>${esc(txt('noReceipt'))}</span>`}</div><p>${esc(CardSlots.rules(lang))}</p>${CardSlots.board(spin?.reels||Array(9).fill('?'),spin)}${spin?`<p role="status">${esc(CardSlots.summary(spin,spin.stake,lang))}</p>`:''}${button(txt('slotSpin'),'slotSpin','',!receipt||me().coins<state.stake,'gold')}</div>
  ${s?`<div class="seat"><h3>${esc(txt('slotOther'))}</h3>${Object.entries(s.spins).map(([id,r])=>`<div class="row"><span>${esc(playerName(id))}</span><b>${esc(r.reels.join(''))}</b><span>${r.multi}×</span></div>`).join('')}</div>`:''}`;
 }
 // Add a free, fictional coin refill to the player list panel.
 const refill=document.createElement('button');refill.className='button outline small-btn';refill.dataset.i='walletRefill';refill.textContent=txt('walletRefill');refill.onclick=()=>sendAction('refill');document.querySelector('#players').after(refill);
+Object.keys(COACH).forEach(k=>COACH[k].slots=[CardSlots.rules(k)]);
 changeLang('ja');
 
 

@@ -65,7 +65,14 @@ action(p[0],'diceRisk');assert.equal(typeof s.dice[p[0].pid].die,'number');
 // Slots shopping and receipt matching.
 action(p[0],'config',{game:'slots',stake:10});action(p[0],'shop',{cost:111});checkNoErrors(p[0]);
 s=room.session;assert.equal(s.receipts[p[0].pid].target,'111');
-action(p[0],'slotSpin');assert.equal(s.spins[p[0].pid].reels.length,3);
+const before=p[0].last('state').players[0].coins;
+action(p[0],'slotSpin',{reels:Array(9).fill('★'),multi:9999});
+const spin=s.spins[p[0].pid];assert.equal(spin.reels.length,9);
+const rules=require('./public/slots.js');assert.equal(spin.multi,rules.evaluate(spin.reels,'111').multi);
+assert.equal(p[0].last('state').players[0].coins,before-10+spin.payout);
+assert.equal(p[1].last('state').session.spins[p[0].pid].payout,spin.payout);
+action(p[1],'slotSpin');assert.equal(p[1].last('error').key,'needShop');
+const saved=s.spins[p[0].pid];room.players[0].coins=0;action(p[0],'slotSpin');assert.equal(p[0].last('error').key,'coinsLow');assert.equal(s.spins[p[0].pid],saved);
 // Nickname uniqueness, max room capacity and account-free joining.
 const extra=new FakeWS();app.wss.emit('connection',extra,{socket:{remoteAddress:'127.0.0.22'}});
 extra.act({type:'join',name:'Guest1',phrase:'fourplayers'});assert.equal(extra.last('error').key,'roomFull');
