@@ -812,7 +812,9 @@ body.play-only .shell {
       speak();
     });
 
-  ['nextStep', 'prevStep'].forEach(id => {
+ ['nextStep', 'prevStep', 'restartTutorial'].forEach(id => {
+
+
     document.getElementById(id)
       ?.addEventListener('click', speak);
   });
